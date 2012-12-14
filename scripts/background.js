@@ -1,5 +1,15 @@
 (function () {
-    var timer;
+    var timer,
+        tabsToDisplay = [];
+
+
+    function displayPageAction(tabs, tabId) {
+        if (tabs.length > 0) {
+            chrome.pageAction.show(tabId);
+        } else {
+            chrome.pageAction.hide(tabId);
+        }
+    }
 
     function TabManager() {
 
@@ -13,10 +23,17 @@
             tabs[id] = tab || create();
         }
 
+        this.getAll = function () {
+            return tabs;
+        }
+
         function create() {
             var tab = {
                 seconds:0,
-                url: undefined
+                url:undefined,
+                title:"No Title",
+                favIconUrl:undefined,
+                closedAt:undefined
             }
             return tab;
         }
@@ -26,17 +43,21 @@
     tabManager = new TabManager();
 
     chrome.tabs.onCreated.addListener(function (tab) {
-        tabManager.set(tab.id)
+        tabManager.set(tab.id);
     });
 
     chrome.tabs.onUpdated.addListener(function (tabId, info, tab) {
         var currentTab = tabManager.get(tabId);
 
-        if (info.status !== "loading") {
+        if (info.status !== "complete") {
             return;
         }
 
-        currentTab.url = info.url;
+
+        currentTab.title = tab.title;
+        currentTab.url = tab.url;
+        currentTab.favIconUrl = tab.favIconUrl;
+
         tabManager.set(tabId, currentTab);
     });
 
@@ -55,12 +76,49 @@
 
     chrome.tabs.onRemoved.addListener(function (tabId) {
         var currentTab = tabManager.get(tabId);
+        currentTab.closedAt = new Date();
 
-        if (currentTab.seconds <= 5) {
-            console.log("OMG");
+        if (currentTab.seconds <= 2 && !~currentTab.url.search(/^chrome:\/\//)) {
+            tabsToDisplay.push(currentTab);
         }
 
     });
 
 
+    //show page action or not
+    chrome.tabs.onActivated.addListener(function (tab) {
+        displayPageAction(tabsToDisplay, tab.tabId);
+    });
+
+    chrome.tabs.onUpdated.addListener(function (tabId) {
+        displayPageAction(tabsToDisplay, tabId);
+    });
+
+    //Deleting old tabs
+
+    window.setInterval(function () {
+
+        function calcDateDifferenceInSeconds(begin, end) {
+            return Math.ceil((end - begin) / 1000);
+        }
+
+        function isTooOld(closedAt) {
+            return calcDateDifferenceInSeconds(closedAt, new Date()) > 60;
+        }
+
+        var now = new Date();
+        for (var i = 0; i < tabsToDisplay.length; i++) {
+
+            if (isTooOld(tabsToDisplay[i].closedAt)) {
+                tabsToDisplay.splice(i, 1);
+            }
+        }
+    }, 1000 * 60 * 30);
+
+
+    //Messaging
+    chrome.extension.onMessage.addListener(
+        function (request, sender, sendResponse) {
+            sendResponse({tabs:tabsToDisplay});
+        });
 })()
