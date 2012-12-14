@@ -1,50 +1,66 @@
-var tabs = {},
-    timer;
+(function () {
+    var timer;
 
+    function TabManager() {
 
-function newTab() {
-    var defaults = {
-        seconds: 0
-    }
-    return defaults;
-}
+        var tabs = {};
 
+        this.get = function (id) {
+            return tabs[id] || create()
+        }
 
-chrome.tabs.onCreated.addListener(function (tab) {
+        this.set = function (id, tab) {
+            tabs[id] = tab || create();
+        }
 
-    tabs[tab.id] = newTab();
-    //console.log(tabs);
-});
-
-chrome.tabs.onUpdated.addListener(function (tabId, info, tab) {
-    var currentTab = tabs[tabId] || newTab();
-
-    if (info.status !== "loading") {
-        return;
-    }
-
-    currentTab.url = info.url;
-    tabs[tabId] = currentTab;
-});
-
-chrome.tabs.onActivated.addListener(function (tab) {
-    var currentTab = tabs[tab.tabId] || newTab(),
-        seconds;
-
-    window.clearInterval(timer);
-
-    timer = window.setInterval(function () {
-        currentTab.seconds += 1;
-        tabs[tab.tabId] = currentTab;
-
-    }, 1000);
-});
-
-chrome.tabs.onRemoved.addListener(function (tabId) {
-    var currentTab = tabs[tabId] || newTab();
-
-    if (currentTab.seconds <= 10) {
-        console.log("OMG");
+        function create() {
+            var tab = {
+                seconds:0,
+                url: undefined
+            }
+            return tab;
+        }
     }
 
-});
+
+    tabManager = new TabManager();
+
+    chrome.tabs.onCreated.addListener(function (tab) {
+        tabManager.set(tab.id)
+    });
+
+    chrome.tabs.onUpdated.addListener(function (tabId, info, tab) {
+        var currentTab = tabManager.get(tabId);
+
+        if (info.status !== "loading") {
+            return;
+        }
+
+        currentTab.url = info.url;
+        tabManager.set(tabId, currentTab);
+    });
+
+    chrome.tabs.onActivated.addListener(function (tab) {
+        var currentTab = tabManager.get(tab.tabId),
+            seconds;
+
+        window.clearInterval(timer);
+
+        timer = window.setInterval(function () {
+            currentTab.seconds += 1;
+            tabManager.set(tab.tabId, currentTab);
+
+        }, 1000);
+    });
+
+    chrome.tabs.onRemoved.addListener(function (tabId) {
+        var currentTab = tabManager.get(tabId);
+
+        if (currentTab.seconds <= 5) {
+            console.log("OMG");
+        }
+
+    });
+
+
+})()
