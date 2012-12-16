@@ -1,39 +1,68 @@
 <!doctype html>
-<style type="text/css">
+<style type="text/css" xmlns="http://www.w3.org/1999/html">
     #mainPopup {
         padding: 10px;
         height: 200px;
         width: 400px;
         font-family: Helvetica, Ubuntu, Arial, sans-serif;
+        font-size: 11px;
+    }
+    h1 {
+        font-size: 14px;
     }
 
     .element-container {
         clear: both;
         overflow-y: hidden;
         height: 50px;
+        margin-top: 5px;
     }
     .favicon {
         float:left;
         width: 30px;
     }
+    .favicon img {
+        width: 30px;
+    }
 
     .url {
         float: left;
-        font-size: 10px;
-        width: 350px;
-        overflow-y: hidden;
+        width: 300px;
+        margin-left: 10px;
+        border-right: 1px solid #D4D4D4;
+        border-bottom: 1px solid #D4D4D4;
+        padding: 5px;
+        height: 30px;
+    }
+
+    .element-container a {
+        color: #000;
+        text-decoration: none;
+    }
+
+    .controls {
+        float: left;
         margin-left: 10px;
     }
 
+    #container {
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+
 </style>
+
 <script type="text/javascript" src="/lib/jquery-1.8.3.min.js"></script>
 <script type="text/javascript" src="/scripts/popup.js"></script>
 
 
+
 <div id="mainPopup">
-    <div>Sites you may have accidentally closed recently</div>
-    <hr \>
+    <div style="font-size: 14px; font-weight: bold;">Tabs you may have accidentally closed recently</div>
 
     <div id="container">
+    </div>
+    <div style="">
+        Follow me on <a href="http://bit.ly/UTu36i">Google+</a> or <a href="http://bit.ly/UK6Xku">Twitter</a>  :)
     </div>
 </div>

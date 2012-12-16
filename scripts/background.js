@@ -1,4 +1,4 @@
-(function () {
+(function ($) {
     var timer,
         tabsToDisplay = [];
 
@@ -20,7 +20,7 @@
         }
 
         this.set = function (id, tab) {
-            tabs[id] = tab || create();
+            tabs[id] = $.extend({}, create(), tab);
         }
 
         this.getAll = function () {
@@ -29,6 +29,7 @@
 
         function create() {
             var tab = {
+                id: 0,
                 seconds:0,
                 url:undefined,
                 title:"No Title",
@@ -43,7 +44,7 @@
     tabManager = new TabManager();
 
     chrome.tabs.onCreated.addListener(function (tab) {
-        tabManager.set(tab.id);
+        tabManager.set(tab.id, {id: tab.id});
     });
 
     chrome.tabs.onUpdated.addListener(function (tabId, info, tab) {
@@ -57,6 +58,11 @@
         currentTab.title = tab.title;
         currentTab.url = tab.url;
         currentTab.favIconUrl = tab.favIconUrl;
+
+        //sanitize missing favicons, gnarf chrome
+        if (!currentTab.favIconUrl) {
+            currentTab.favIconUrl = chrome.extension.getURL("/icons/38.png");
+        }
 
         tabManager.set(tabId, currentTab);
     });
@@ -103,7 +109,7 @@
         }
 
         function isTooOld(closedAt) {
-            return calcDateDifferenceInSeconds(closedAt, new Date()) > 60;
+            return calcDateDifferenceInSeconds(closedAt, new Date()) > 60 * 30;
         }
 
         var now = new Date();
@@ -113,7 +119,7 @@
                 tabsToDisplay.splice(i, 1);
             }
         }
-    }, 1000 * 60 * 30);
+    }, 1000 * 60);
 
 
     //Messaging
@@ -121,4 +127,4 @@
         function (request, sender, sendResponse) {
             sendResponse({tabs:tabsToDisplay});
         });
-})()
+})(jQuery)

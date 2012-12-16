@@ -7,6 +7,9 @@ $(function() {
     <div class="url">\
         <a href="%url%">%title%</a>\
     </div>\
+    <div class="controls">\
+    <a href="#" class="delete">delete</a>\
+    </div>\
     </div>';
 
     function fillTemplate(template, data) {
@@ -31,7 +34,7 @@ $(function() {
 
     });
 
-    $('#container').on('click', 'a', function(e) {
+    $('#mainPopup').on('click', 'a', function(e) {
         e.preventDefault();
         chrome.tabs.create({url:$(this).attr('href')});
     });
