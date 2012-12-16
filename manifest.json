@@ -1,8 +1,8 @@
 {
-    "name":"SAMPLE_NAME",
-    "version":"0.1",
+    "name":"Gentle Accidentally Closed Tab Notifier",
+    "version":"16122012.1",
     "manifest_version":2,
-    "description":"SAMPLE_DESCRIPTION",
+    "description":"Notifies with an unobtrusive page action when you might have accidentally closed a tab.",
     "background":{
         "page":"background.html"
     },
@@ -11,22 +11,14 @@
             "19":"icons/19.png",
             "38":"icons/38.png"
         },
-        "default_title":"SAMPLE_TITLE",
         "default_popup":"fragments/popup.html"
     },
-    "content_scripts":[
-        {
-            "matches":["http://*/*"],
-            "js":["lib/jquery-1.8.3.min.js", "scripts/main.js"],
-            "run_at":"document_idle"
-        }
-    ],
+
     "icons":{
         "16":"icons/16.png",
         "48":"icons/48.png",
         "128":"icons/128.png"
     },
-    "options_page":"fancy-settings/source/index.html",
     "permissions":[
         "tabs"
     ]

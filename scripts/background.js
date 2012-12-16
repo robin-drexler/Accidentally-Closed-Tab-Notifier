@@ -130,7 +130,7 @@
                 tabsToDisplay.splice(i, 1);
             }
         }
-    }, 1000 * 60);
+    }, 1000 * 30);
 
     window.setInterval(function() {
         chrome.tabs.query({active: true}, function(tabs) {
