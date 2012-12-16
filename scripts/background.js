@@ -132,6 +132,15 @@
         }
     }, 1000 * 60);
 
+    window.setInterval(function() {
+        chrome.tabs.query({active: true}, function(tabs) {
+            tabs.forEach(function(tab) {
+                displayPageAction(tabsToDisplay, tab.id);
+            });
+        });
+
+    }, 1000);
+
 
     //Messaging
     chrome.extension.onMessage.addListener(
