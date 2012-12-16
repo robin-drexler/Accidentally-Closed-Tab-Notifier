@@ -1,6 +1,6 @@
 {
     "name":"Gentle Accidentally Closed Tab Notifier",
-    "version":"16122012.1",
+    "version":"1212.1",
     "manifest_version":2,
     "description":"Notifies with an unobtrusive page action when you might have accidentally closed a tab.",
     "background":{
