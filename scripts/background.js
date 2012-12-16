@@ -2,6 +2,17 @@
     var timer,
         tabsToDisplay = [];
 
+    function getTabsWithoutTabId(tabs, tabId) {
+        for (var i = 0; i < tabs.length; i++) {
+
+            if (tabs[i].id === tabId) {
+                tabs.splice(i, 1);
+                return tabs;
+            }
+        }
+
+        return tabs;
+    }
 
     function displayPageAction(tabs, tabId) {
         if (tabs.length > 0) {
@@ -125,6 +136,18 @@
     //Messaging
     chrome.extension.onMessage.addListener(
         function (request, sender, sendResponse) {
-            sendResponse({tabs:tabsToDisplay});
+            console.log(request);
+
+            if (request.purpose === "get") {
+                sendResponse({tabs:tabsToDisplay});
+                return;
+            }
+
+            if (request.purpose === "delete") {
+                tabsToDisplay = getTabsWithoutTabId(tabsToDisplay, request.id);
+            }
+
+            sendResponse({});
+
         });
 })(jQuery)
