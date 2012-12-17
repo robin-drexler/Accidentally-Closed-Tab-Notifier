@@ -79,5 +79,9 @@ function PocketOauth(oAuthProvider) {
         return token;
     }
 
+    this.hasAccess = function() {
+        return !!window.localStorage.getItem(self.accessTokenKey);
+    }
+
     this.init(oAuthProvider);
 }

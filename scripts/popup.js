@@ -9,7 +9,7 @@ $(function () {
     </div>\
     <div class="controls">\
     <a href="javascript:;" class="remove" data-tab-id="%id%">remove</a> | \
-    <a href="javascript:;" class="pocket" data-tab-id="%id%">save2pocket</a>\
+    <a href="javascript:;" class="pocket" data-tab-id="%id%">%pocketText%</a>\
     \
     </div>\
     </div>';
@@ -24,12 +24,15 @@ $(function () {
 
     chrome.extension.sendMessage({purpose:'get'}, function (response) {
         var tabs = response.tabs,
-            $container = $('#container');
+            $container = $('#container'),
+            pocketOauth = new PocketOauth(window.OAuth2);
 
         $.each(tabs, function (_, tab) {
             if (!tab.url) {
                 return true;
             }
+
+            tab.pocketText = pocketOauth.hasAccess() ? 'save2pocket' : 'login2pocket';
             $container.append(fillTemplate(tpl, tab));
         });
 
