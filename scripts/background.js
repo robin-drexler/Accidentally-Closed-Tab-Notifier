@@ -95,7 +95,7 @@
         var currentTab = tabManager.get(tabId);
         currentTab.closedAt = new Date();
 
-        if (currentTab.seconds <= 2 && !~currentTab.url.search(/^chrome:\/\//)) {
+        if (currentTab.seconds <= 2 && !~currentTab.url.search(/^chrome:\/\/|^chrome-extension/)) {
             tabsToDisplay.push(currentTab);
         }
 
@@ -154,6 +154,12 @@
 
             if (request.purpose === "delete") {
                 tabsToDisplay = getTabsWithoutTabId(tabsToDisplay, request.id);
+            }
+
+            if (request.purpose === "store") {
+                window.localStorage.setItem(request.key, request.value);
+                console.log(request);
+                console.log(window.localStorage.getItem('pocket.access_token'));
             }
 
             sendResponse({});

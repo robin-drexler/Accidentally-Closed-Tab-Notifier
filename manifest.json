@@ -14,12 +14,21 @@
         "default_popup":"fragments/popup.html"
     },
 
+    "content_scripts":[
+        {
+            "matches":["http://blog.robin-drexler.com/oauthredirect*"],
+            "js":["/lib/oauth/injection.js"],
+            "run_at":"document_start"
+        }
+    ],
+
     "icons":{
         "16":"icons/16.png",
         "48":"icons/48.png",
         "128":"icons/128.png"
     },
     "permissions":[
-        "tabs"
+        "tabs",
+        "https://getpocket.com/*"
     ]
 }
